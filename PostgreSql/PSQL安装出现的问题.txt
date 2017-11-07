@@ -1,0 +1,35 @@
+Windows 10专业版
+
+在安装PostgreSQL时出现了下面一些问题，以及安装结果
+
+
+#问题1：安装完成后，在命令行中输入：psql，然后回车。命令行提示："psql"不是内部或外部命令，也不是可运行的程序或批处理文件
+#原因：没有配置相关环境变量
+#解决方案：在环境变量的path中添加bin文件夹的路径
+
+
+#问题2：安装过程中弹出一个提示窗口：Problem running post-install step. Installation may not complete correctly. The database cluster initialisation failed. 
+
+#问题结果：如果点击确定继续安装，则仍可继续安装，没有出现其他问题。但是当在命令行输入psql时，出现提示“无法连接到服务器，connection refused（0x0000274D/10061）服务器是否在主机localhost上运行并且准备接受在端口5432上的TCP/IP连接”，这说明安装失败了。然后这时查看安装目录下的data文件夹，发现是个空文件夹。
+
+#原因：不清楚，可能是权限问题
+
+#解决方案：在安装时应该右键以管理员身份运行
+
+
+#问题3：安装过程中弹出一个提示窗口：Failed  to load sql modules into the database cluster。
+
+#问题结果：如果点击确定继续安装，则仍可继续安装，没有出现其他问题。但是当在命令行输入psql时，出现提示“无法连接到服务器，connection refused（0x0000274D/10061）服务器是否在主机localhost上运行并且准备接受在端口5432上的TCP/IP连接”，这说明安装失败了。这时查看安装目录下的data文件夹，发现有文件。
+
+#原因：不清楚
+
+#解决方案：参考http://blog.csdn.net/dtjiawenwang88/article/details/78117699，在计算机管理—>服务里，找到 “Secondary  Logo” 服务，并启动，就会自动load sql modules。
+
+
+经历了n次卸载重装后，终于把PostgreSQL安装成功了。
+
+
+以上问题就是在安装过程中遇到的奇怪问题，这也是windows环境的缺陷，很多时候许多东西都需要自己配置，经常会出现各种莫名奇妙的问题。当然这些问题肯定都是能够解决的，我们都不会是第一次遇到这些问题的人，只要善于百度或者Google基本都能解决。
+
+
+
