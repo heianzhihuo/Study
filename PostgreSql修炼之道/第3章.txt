@@ -1,0 +1,37 @@
+第3章 SQL语言入门
+
+create table table_name();	创建表
+
+drop table table_name;		删除表
+
+insert into table_name() values ();	向表中插入数据
+
+select () from table_name where ();
+
+update table_name set age=15;
+
+delete from student where no = 3;
+
+排序
+order by
+
+select * from student oder by age desc,score;
+
+分组查询
+group by
+
+select age,count(*) from student group by age;
+
+多表联合查询
+join
+
+查询嵌套
+
+UNION
+表的并集
+
+清空表内容，但不删除表
+truncate table student_bak;
+
+
+

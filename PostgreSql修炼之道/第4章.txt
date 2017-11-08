@@ -1,0 +1,33 @@
+psql工具的使用介绍
+
+这一章主要是讲了psql命令行下的相关命令和操作
+
+
+\l	查看数据库
+\d	查看表
+\d+
+\?	帮助
+\timing on	显示sql执行时间
+\dn
+\db
+\db
+\du
+\dp
+
+\encoding	指定客户端字符编码
+
+\pset
+
+\x
+\i
+
+\echo
+
+自动提交
+begin
+commit\rollback
+
+获取实际执行的SQL
+psql -E postgres
+
+\set ECHO_HIDDEN on|off 命令
