@@ -1,0 +1,12 @@
+1.1 PostgreSQL简介及发展历程
+	PostgreSQL是对象-关系数据库管理系统
+1.2 PostgreSQL特性
+	开放性、可编程性、可定制性、索引手段、多种身份认证方式
+1.3 PostgreSQL的应用
+1.4 PostgreSQL代码结构
+	遵照协议PostgreSQL Licence发布。
+	主要程序由C语言编写
+	3400多个文件
+	若干模块
+1.5 安装
+1.6 PostgreSQL数据库命令
