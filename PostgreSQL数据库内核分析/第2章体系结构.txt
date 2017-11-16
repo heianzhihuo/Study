@@ -66,4 +66,24 @@ PostgreSQLÓÉ5´ó²¿·Ö×é³É£ºÁ¬½Ó¹ÜÀíÏµÍ³¡¢±àÒëÖ´ÐÐÏµÍ³¡¢´æ´¢¹ÜÀíÏµÍ³¡¢ÊÂÎñÏµÍ³¡¢ÏµÍ
 
 2.4.1 ³õÊ¼»¯ÄÚ´æÉÏÏÂÎÄ
 	¿ÉÒÔÍ¨¹ýÊÍ·ÅÄÚ´æÉÏÏÂÎÄÀ´±ÜÃâÄÚ´æÐ¹Â¶
+
 2.4.2 ÅäÖÃ²ÎÊý
+	ÔÚ³õÊ¼»¯ÄÚ´æ»·¾³Ö®ºóÐèÒªÅäÖÃPostmasterÔËÐÐÊ±ËùÐèµÄ¸÷ÖÖ²ÎÊý¡£GUCÄ£¿éÊµÏÖÁË¶àÖÖÊý¾ÝÀàÐÍµÄ±äÁ¿ÅäÖÃ
+	²ÎÊýÓÐ6ÖÐÀàÐÍ£¬Í¨¹ýÃ¶¾ÙÀàÐÍGucContext¶¨Òå£¬Ö»ÄÜÔÚºÏÊÊµÄ»·¾³ÏÂ½øÐÐÅäÖÃ
+	Ã¿Ò»ÖÖÊý¾ÝÀàÐÍµÄGUC²ÎÊý¶¼ÓÐÁ½²¿·Ö×é³É£º¹²ÐÔ²¿·ÖºÍÌØÐÔ²¿·Ö¡£Ã¿Ò»ÖÖ¾ßÌåµÄÊý¾ÝÀàÐÍ¶¼ÓÐÆäÌØÐÔµÄÊý¾Ý½á¹¹£¬¸Ã½á¹¹ÖÐµÄµÚÒ»Ïî¶¼ÊÇÖ¸ÏòÆä¹²ÐÔÊý¾Ý½á¹¹µÄÖ¸Õë¡£
+	1¡¢³õÊ¼»¯GUC²ÎÊý£ºÏÈÍ³¼Æ²ÎÊý¸öÊý£¬·ÖÅäÖ¸Õë£»½«Ã¿¸ö²ÎÊýÉèÖÃÎªÄ¬ÈÏÖµ£»µ÷ÓÃgetenvÀ´»òµÃ»·¾³±äÁ¿£»¼ì²éÏµÍ³×î´ó°²È«Õ»Éî¶È¡£
+	2¡¢ÅäÖÃGUC²ÎÊý
+	3¡¢¶ÁÈ¡ÅäÖÃÎÄ¼þ
+
+2.4.3 ´´½¨¼àÌýÌ×½Ó×Ö
+
+2.4.4 ×¢²áÐÅºÅ´¦Àíº¯Êý
+	½ø³ÌÓÐÈ¨Ñ¡ÔñÏàÓ¦»òÆÁ±ÎÐÅºÅ£¨SIGKILLºÍSIGSTOP²»ÄÜÆÁ±Î£©¡£Postmaster¶¨ÒåÁËÈý¸öÐÅºÅ¼¯£ºBlockSigÊÇÒªÆÁ±ÎµÄÐÅºÅ¼¯£»UnBlockSigÊÇ²»Ï£Íû±»ÆÁ±ÎµÄÐÅºÅ¼¯£»AuthBlockSigÊÇÔÚÓÃ»§½øÐÐÁ¬½ÓÈÏÖ¤Ê±ÐèÒªÆÁ±ÎµÄÐÅºÅ¼¯£¬ËüÃÇ¶¼ÊÇÎ»ÏòÁ¿¡£
+	ÔÚÉèÖÃÏìÓ¦ÐÅºÅµÄ´¦Àíº¯ÊýÇ°£¬ÒªÍ¨¹ýPG_SETMASKº¯Êý°ÑÕâÐ©ÐÅºÅÈ«²¿ÆÁ±Î£¬È»ºóÍ¨¹ýpqsignalº¯ÊýÎª¸ÐÐËÈ¤µÄÐÅºÅÉèÖÃ´¦Àíº¯Êý¡£
+	1¡¢ÐÅºÅ´¦Àíº¯ÊýSIGHUP_handler
+	ÅäÖÃÎÄ¼þ·¢Éú¸Ä±äÊ±²úÉúSIGHUPÐÅºÅ¡£Postmaster½ø³ÌÊÕµ½¸ÃÐÅºÅÊ±£¬ÖØÐÂ¶ÁÈ¡ÅäÖÃÎÄ¼þpostgresql.conf£¬È»ºóÏò×Ó½ø³Ì·¢³öÍ¬ÑùµÄÐÅºÅ£¬²¢ÖØÐÂ×°ÔØpg_hba.confºÍpg_ident.confÎÄ¼þ¡£
+	2¡¢ÐÅºÅ´¦Àíº¯Êýpmdie
+	pmdie´¦ÀíÈýÖÖÐÅºÅ£ºSIGTERM¡¢SIGINTºÍSIGQUIT¡£ÈýÖÖÐÅºÅ·Ö±ð¶ÔÓ¦ÈýÖÖ²»Í¬µÄÏµÍ³¹Ø±Õ·½Ê½
+	3¡¢ÐÅºÅ´¦Àíº¯Êýreaper
+	
+	
