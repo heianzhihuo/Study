@@ -85,5 +85,19 @@ PostgreSQLÓÉ5´ó²¿·Ö×é³É£ºÁ¬½Ó¹ÜÀíÏµÍ³¡¢±àÒëÖ´ÐÐÏµÍ³¡¢´æ´¢¹ÜÀíÏµÍ³¡¢ÊÂÎñÏµÍ³¡¢ÏµÍ
 	2¡¢ÐÅºÅ´¦Àíº¯Êýpmdie
 	pmdie´¦ÀíÈýÖÖÐÅºÅ£ºSIGTERM¡¢SIGINTºÍSIGQUIT¡£ÈýÖÖÐÅºÅ·Ö±ð¶ÔÓ¦ÈýÖÖ²»Í¬µÄÏµÍ³¹Ø±Õ·½Ê½
 	3¡¢ÐÅºÅ´¦Àíº¯Êýreaper
+	µ±ÓÐ×Ó½ø³ÌÍË³öÊ±£¬×Ó½ø³Ì»á¸øPostmaster·¢ËÍÒ»¸öSIGCHLDÐÅºÅ¡£PostmasterÊÕµ½¸ÃÐÅºÅºóµ÷ÓÃreaperº¯ÊýÇåÀíÍË³öµÄ×Ó½ø³Ì¡£
+
+2.4.5 ¸¨Öú½ø³ÌÆô¶¯
+	ÔÚPostmasterµÄ´´½¨¹ý³ÌÖÐÊ×ÏÈ»áÆô¶¯SysLoggerÈÕÖ¾½ø³Ì£¬²¢Íê³ÉPgStat½ø³Ì¡¢AutoVacuum½ø³ÌµÄ³õÊ¼»¯¹¤×÷£¬¶øÔÚPostmasterµÄ¼àÌýÑ­»·ÖÐ¼ì²â¸¨Öú½ø³ÌµÄ×´Ì¬£¬²¢´´½¨»òÕßÖØÐÂ´´½¨ÕâÐ©¸¨Öú½ø³Ì¡£
+	1¡¢SysLogger¸¨Öú½ø³Ì
+	Postmasterµ÷ÓÃSysLogger_Startº¯ÊýÆô¶¯SysLogger×Ó½ø³Ì¡£¸Ã×Ó½ø³ÌÍ¨¹ý¹ÜµÀ´Ó¸÷½ø³ÌÖÐÊÕ¼¯ËùÓÐstderrÊä³ö£¬²¢½«ÕâÐ©Êä³öÐ´Èëµ½ÈÕÖ¾ÎÄ¼þÖÐ¡£
+	2¡¢¸¨Öú½ø³ÌµÄ³õÊ¼»¯
 	
+2.4.6 ×°ÔØ¿Í»§¶ËÈÏÖ¤ÎÄ¼þ
+	×¢²áÍêÐÅºÅ´¦Àíº¯Êýºó£¬½«ÖðÐÐ¶ÁÈ¡dataÄ¿Â¼ÏÂµÄpg_hba.confºÍpg_ident.confÁ½¸öÅäÖÃÎÄ¼þµÄÄÚÈÝµ½Á´±í±äÁ¿ÖÐ£¬ÒÔÓÃÓÚ¿ØÖÆ¿Í»§¶ËÈÏÖ¤¡£
+	ÆäÖÐ£¬pg_hba.confÊÇ»ùÓÚÖ÷»úÈÏÖ¤µÄÅäÖÃÎÄ¼þ¡£
+	pg_ident.confÊÇ»ùÓÚÉí·ÝÈÏÖ¤µÄÅäÖÃÎÄ¼þ¡£
+
+2.4.7 Ñ­»·µÈ´ý¿Í»§Á¬½ÓÇëÇó
+	PostgreSQLÏµÍ³²ÉÓÃC/SÄ£Ê½£¬ÏµÍ³ÎªÃ¿¸ö¿Í»§¶Ë·ÖÅäÒ»¸öºóÌ¨·þÎñ½ø³ÌPostgres¡£
 	
