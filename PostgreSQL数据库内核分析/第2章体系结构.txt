@@ -100,4 +100,70 @@ PostgreSQLÓÉ5´ó²¿·Ö×é³É£ºÁ¬½Ó¹ÜÀíÏµÍ³¡¢±àÒëÖ´ÐÐÏµÍ³¡¢´æ´¢¹ÜÀíÏµÍ³¡¢ÊÂÎñÏµÍ³¡¢ÏµÍ
 
 2.4.7 Ñ­»·µÈ´ý¿Í»§Á¬½ÓÇëÇó
 	PostgreSQLÏµÍ³²ÉÓÃC/SÄ£Ê½£¬ÏµÍ³ÎªÃ¿¸ö¿Í»§¶Ë·ÖÅäÒ»¸öºóÌ¨·þÎñ½ø³ÌPostgres¡£
+	·þÎñ½ø³Ì½ÐPostgres
+
+2.5 ¸¨Öú½ø³Ì
+
+2.5.1 SysLoggerÏµÍ³ÈÕÖ¾½ø³Ì
+	¸Ã½ø³ÌÈë¿ÚÎ»ÖÃÎªSysLogger_Startº¯Êý£¬×îºóµ÷ÓÃSysLoggerMainº¯ÊýÕæÕý½øÈëÈÕÖ¾½ø³ÌµÄÔËÐÐ¡£
+
+2.5.2 BgWriterºóÌ¨Ð´½ø³Ì
+	¸Ã½ø³ÌÊÇPostgreSQLÖÐÔÚºóÌ¨½«ÔàÒ³Ð´³öµ½´ÅÅÌµÄ¸¨Öú½ø³Ì¡£ÒýÈë¸Ã½ø³ÌµÄÄ¿µÄ£ºÊ×ÏÈÈç¹ûÒª¶ÁÈ¡µÄÊý¾Ý²»ÔÙ»º³åÇøÒªÏÈ´Ó´ÅÅÌ¶ÁÈëÒª¶ÁÈ¡µÄÊý¾ÝËùÔÚµÄÒ³Ãæ£¬Èç¹û´ËÊ±»º³åÇøÒÑÂú£¬ÔòÐèÒªÏÈ½«²¿·Ö»º³åÇøÒ³ÃæÌæ»»³öÈ¥¡£Èç¹û±»Ìæ»»µÄÒ³ÃæÃ»ÓÐ±»ÐÞ¸Ä¹ý£¬ÔòÕâÐ©Ò³Ãæ¿ÉÒÔÖ±½Ó¶ªÆú£»Èç¹û±»ÐÞ¸Ä¹ý£¬ÔòÐèÒª½«ÕâÐ©Ò³ÃæÐ´³öµ½´ÅÅÌºó²ÅÄÜÌæ»»¡£Æä´Î£¬PostgreSQLÔÚ¶¨ÆÚ×÷¼ì²éµãÊ±ÐèÒª½«ËùÓÐÔàÒ³Ð´³öµ½´ÅÅÌ£¬Í¨¹ýBgWriterÔ¤ÏÈÐ´³öÒ»Ð©ÔàÒ³£¬¿ÉÒÔ¼õÉÙÉèÖÃ¼ì²éµãÊÇÒª½øÐÐµÄIO²Ù×÷£¬Ê¹ÏµÍ³µÄIOÇ÷ÓÚÆ½ÎÈ¡£
+	BgWriter¸¨Öú½ø³ÌÔÚPostmasterÖÐÆô¶¯£¬Èë¿ÚÎªStartBackgroundWriterº¯Êý£¬BgWriterºÍWalWriter²ÉÓÃÏàÍ¬µÄÄ£Ê½Æô¶¯¡£BgWriterÊµ¼Ê¹¤×÷µÄº¯ÊýÊÇBackgroundWriterMain¡£
+	BgWriterºóÌ¨½ø³Ì×îÀíÏëµÄÇé¿öÊÇºóÌ¨Ð´½ø³Ì¸ºÔðË¢»ØËùÓÐµÄ»º³åÇø£¬µ«ÊÇÈç¹ûºóÌ¨Ð´½ø³Ì²»ÄÜ±£Ö¤ÓÐ×ã¹»¶à¸É¾»µÄ»º³åÇøÇé¿öÏÂ£¬³£¹æºóÌ¨½ø³ÌÈÔÈ»ÓÐÈ¨Ë¢»Ø»º³åÇø¡£
+
+2.5.3 WalWriterÔ¤Ð´Ê½ÈÕÖ¾½ø³Ì
+	WAL£¨Write Ahead Log£¬Ò²³ÆÎªXlog£©µÄÖÐÐÄË¼ÏëÊÇ¶ÔÊý¾ÝÎÄ¼þµÄÐÞ¸Ä±ØÐëÊÇ·¢ÉúÔÚÕâÐ©ÐÞ¸ÄÒÑ¾­¼ÇÂ¼µ½ÈÕÖ¾Ö®ºó£¬Ò²¾ÍÊÇÏÈÐ´ÈÕÖ¾ºóÐ´Êý¾Ý¡£
+	WalWriter¸¨Öú½ø³ÌÔÚPostmasterÖÐÆô¶¯£¬Æô¶¯º¯ÊýÎªStartWalWriter£¬WalWriterµÄÊµ¼Ê¹¤×÷º¯ÊýÎªWalWriterMain¡£
+
+2.5.4 PgArchÔ¤Ð´Ê½ÈÕÖ¾¹éµµ½ø³Ì
+	¸Ã½ø³Ì×÷ÓÃÊÇ¶ÔWALÈÕÖ¾ÈÕÖ¾ÔÚ´ÅÅÌÉÏµÄ´æ´¢ÐÎÊ½½øÐÐ¹éµµ±¸·Ý¡£
+	PostgreSQL»áÔÚÊý¾Ý¼¯´ØµÄpg_xlog/archiver_statusÄ¿Â¼ÏÂ¼ÇÂ¼Ã¿Ò»¸öWALÎÄ¼þµÄ×´Ì¬£¬×´Ì¬ÎÄ¼þµÄÇ°×ºÓë¶ÎÎÄ¼þÍ¬Ãû£¬ÒÔ±íÊ¾Ê±¼äË³ÐòµÄÕûÊýÃüÃû¡£ºó×ºÎª.ready»òÕß.done¡£
+	PgArch½ø³ÌÔÚ¹¤×÷Ñ­»·ÖÐ¼ì²âµ½ÐèÒª½øÐÐ¹éµµÊ±»áÕÒµ½ËùÓÐ¡°¾ÍÐ÷¡±µÄWAL¶ÎÎÄ¼þ£¬È»ºó¶ÔÆä½øÐÐ¹éµµ¡£Íê³ÉÒ»´Î¹éµµÖ®ºó£¬PAArch½«ÐÝÃßÖ±ÖÁÏÂÒ»´ÎÐèÒª¹éµµÊ±¡£
+
+2.5.5 AutoVacuumÏµÍ³×Ô¶¯ÇåÀí½ø³Ì
+	ÔÚPostgreSQLÊý¾Ý¿âÖÐ£¬¶Ô±íÔª×éµÄUPDATE»òDELETE²Ù×÷²¢Î´Á¢¼´É¾³ý¾É°æ±¾µÄÊý¾Ý£¬±íÖÐµÄ¾ÉÔª×éÖ»ÊÇ±»±êÊ¶ÎªÉ¾³ý×´Ì¬£¬²¢Î´Á¢¼´ÊÍ·Å¿Õ¼ä¡£AutoVacuum½ø³Ì£¬×Ô¶¯Ö´ÐÐVACUUMºÍANALYZEÃüÁî£¬»ØÊÕ±»±êÊ¾ÎªÉ¾³ý×´Ì¬¼ÇÂ¼µÄ¿Õ¼ä£¬¸üÐÂ±íµÄÍ³¼ÆÐÅÏ¢¡£
+	AutoVacuum½ø³ÌÖÐ°üº¬Á½ÖÖ²»Í¬µÄ´¦Àí½ø³Ì£ºAutoVacuum LauncherºÍAutoVacuum Worker¡£AutoVacuum LauncherÎª¼à¿Ø½ø³Ì£¬AutoVacuum Worker½ø³ÌÖ´ÐÐÊµ¼ÊµÄÇåÀíÈÎÎñ¡£
+
+2.5.6 PgStatÍ³¼ÆÊý¾ÝÊÕ¼¯½ø³Ì
+	¸Ã½ø³ÌÊÇPostgreSQLÊý¾Ý¿âÏµÍ³µÄÍ³¼ÆÐÅÏ¢ÊÕ¼¯Æ÷£¬×¨ÃÅ¸ºÔðÊÕ¼¯Êý¾Ý¿âÏµÍ³ÖÐµÄÍ³¼ÆÐÅÏ¢¡£
+	¸Ã½ø³ÌÊÕ¼¯µÄÍ³¼ÆÐÅÏ¢Ö÷ÒªÊÇÓÃÓÚ²éÑ¯ÓÅ»¯Ê±µÄ´ú¼Û¹ÀËã¡£
+
+
+2.6 ·þÎñ½ø³ÌPostgres
+	Postgres½ø³ÌÊÇÊµ¼Ê½ÓÊÜ²éÑ¯ÇëÇó²¢µ÷ÓÃÏàÓ¦Ä£¿é´¦Àí²éÑ¯µÄPostgreSQL·þÎñ½ø³Ì¡£ËüÖª¼º½ÓÊÜÓÃ»§µÄÃüÁî½øÐÐ±àÒëÖ´ÐÐ£¬²¢½«½á¹û·µ»Ø¸øÓÃ»§¡£
+
+2.6.1 ³õÊ¼»¯ÄÚ´æ»·¾³
+	Postgres½ø³ÌÓÐÁ½ÖÖÔËÐÐ·½Ê½¡£¶àÓÃ»§Ä£Ê½ÏÂ±»Postmaster¶¯Ì¬´´½¨£¬ÔòÕâ²¿·Ö¹¤×÷ÓÉPostmasterÀ´Íê³É£¬ÔÚPostgres½ø³ÌÖÐ´Ë²¿·ÖÌø¹ý¡£
+
+2.6.2 ÅäÖÃÔËÐÐ²ÎÊýºÍ´¦Àí¿Í»§¶Ë´«µÝµÄGUC²ÎÊý
+	¶àÓÃ»§Ä£Ê½ÏÂÓÉPostmasterÍê³É£¬µ¥ÓÃ»§Ä£Ê½ÏÂºÍPostmasterÍêÈ«ÏàÍ¬¡£
+
+2.6.3 ÉèÖÃÐÅºÅ´¦ÀíºÍÐÅºÅÆÁ±Î
+	SIGHupHandler£ºÅäÖÃÎÄ¼þ·¢Éú¸Ä±äÊ±²úÉú´ËÐÅºÅ¡£
+	StatementCancelHandler£ºÔÚÊÕµ½SIGINTÐÅºÅºóµ÷ÓÃ´Ëº¯Êý£¬ÖÕÖ¹ÕýÔÚ½øÐÐµÄ²éÑ¯²Ù×÷¡£
+	die£º¸Ãº¯Êý´¦ÀíSIGTERMÐÅºÅ£¬ÓÃÀ´ÖÕÖ¹µ±Ç°ÊÂÎñ¡£
+	quickdie£º´¦ÀíSIGQUITÐÅºÅ¡£ÏÈÆÁ±ÎÆäËûÐÅºÅ£¬È»ºó½áÊøÕýÔÚ½øÐÐµÄ¹¤×÷²¢ÍË³ö¡£
+	handle_sig_alarm£º¸Ãº¯Êý´¦ÀíSIGALRMÐÅºÅ£¬ÕâÊÇÓÉ½ø³ÌµÈ´ýËøÊ±¼ä³¬Ê±Òý·¢µÄ¡£
+
+2.6.4 ³õÊ¼»¯PostgresµÄÔËÐÐ»·¾³
+	Ê×ÏÈµ÷ÓÃBaseInitº¯ÊýÀ´Íê³É»ù±¾³õÊ¼»¯£¬Ö®ºóµ÷ÓÃInitPostgresÀ´Íê³ÉPostgresµÄ³õÊ¼»¯¡£·Ö³ÉÁ½¸ö½×¶ÎÊÇÒòÎªÓëXLogÏà¹ØµÄ³õÊ¼»¯±ØÐëÔÚInitPostgresÖ®Ç°¡£
+
 	
+2.6.5 ´´½¨ÄÚ´æÉÏÏÂÎÄ²¢ÉèÖÃ²éÑ¯È¡ÏûÌøÔ¾µã
+	Ê×ÏÈ´´½¨Ò»¸öÃûÎªMessageContextµÄÄÚ´æÉÏÏÂÎÄ£¬¸ÃÄÚ´æÉÏÏÂÎÄÓÃÓÚ´æ´¢´ÓÇ°¶Ë·¢ËÍÀ´µÄÏûÏ¢²éÑ¯ÃüÁî£¬ÒÔ¼°ÔÚ²éÑ¯¹ý³ÌÖÐµÄÖÐ¼äÊý¾Ý£¬Ã¿µ±PostgresMain½øÐÐÏÂÒ»´ÎÑ­»·Ê±¸ÃÄÚ´æÉÏÏÂÎÄ»á±»ÖØÉè
+
+2.6.6 Ñ­»·µÈ´ý´¦Àí²éÑ¯
+	¹²Ïí»º³åÇøPqSendBuffer£º8192×Ö½ÚµÄÊä³ö»º³åÇø
+	¹²Ïí»º³åÇøPqRecvBuffer£º8192×Ö½ÚµÄÊäÈë»º³åÇø
+	PostgresÊ¹ÓÃÒ»ÖÖ»ùÓÚÏûÏ¢µÄÐ­ÒéÓÃÓÚ·þÎñÆ÷ºÍ¿Í»§¶ËÖ®¼äµÄÍ¨ÐÅ¡£
+	ÔÚ½øÈëµÚÒ»´ÎÑ­»·Ê±£¬·þÎñ½ø³ÌÊ×ÏÈ»áÊÍ·ÅÉÏ´Î²éÑ¯Ê±µÄÄÚ´æ£¬²¢ÎªÐÂµÄ²éÑ¯·ÖÅäÄÚ´æ¡£
+
+2.6.7 ¼òµ¥²éÑ¯µÄÖ´ÐÐÁ÷³Ì
+	±àÒëÆ÷£ºÉ¨ÃèÓÃ»§ÊäÈëµÄ×Ö·ûÐÎÊ½µÄÃüÁî£¬¼ì²éÆ÷ºÏ·¨ÐÔ£¬²¢½«Æä×ª»»³ÉPostgres¶¨ÒåµÄÄÚ²¿Êý¾Ý½á¹¹£¨Óï·¨Ê÷£©¡£
+	·ÖÎöÆ÷£º½øÐÐÓïÒå·ÖÎö£¬Éú³ÉÍ³Ò»µÄÊý¾Ý½á¹¹Query
+	ÓÅ»¯Æ÷£º¼ì²éËùÓÐ¿ÉÐÐµÄ²éÑ¯¼Æ»®£¬×îÖÕÑ¡Ôñ×î¿ìµÄÖ´ÐÐ²éÑ¯¼Æ»®£¬Êä³öÖ´ÐÐ¼Æ»®£¬
+	Ö´ÐÐÆ÷£ºÖ´ÐÐ²éÑ¯ÃüÁî
+
+2.7 ±¾ÕÂÐ¡½á
+	ÕâÒ»ÕÂ´Óºê¹ÛÉÏ¶ÔPostgreSQLµÄ¿ØÖÆºÍ´¦ÀíÁ÷³Ì½øÐÐÁË¼òµ¥µÄÁË½â£¬ËµÃ÷¸÷¸öÄ£¿éÖ®¼äÊÇÈçºÎÐ­Í¬¹¤×÷µÄ¡£
