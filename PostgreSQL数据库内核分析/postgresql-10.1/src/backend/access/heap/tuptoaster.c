@@ -642,6 +642,7 @@ toast_insert_or_update(Relation rel, HeapTuple newtup, HeapTuple oldtup,
 					 * the original reference to the old value in the new
 					 * tuple.
 					 */
+					 
 					toast_action[i] = 'p';
 					continue;
 				}

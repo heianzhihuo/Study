@@ -1,0 +1,32 @@
+第6章 逻辑结构管理
+
+6.3 模式
+
+6.3.1 模式的定义
+	模式是一个命名空间或目录
+	允许多个用户在使用同一个数据库时彼此互不干扰
+	把数据库对象放在不同模式下，组织成逻辑组，让它们便于管理
+	第三方的应用可以放在不同的模式中，这样不会和其他对象的名字冲突
+
+6.3.2 模式的用法
+
+6.4 表
+
+6.4.2 表的存储属性
+	TOAST技术“The Oversized-Attribute Storage Technique”，主要用于存储大字段值。由于PostgreSQL的页面大小是固定的，为8KB，并且不允许行跨越多个页面。为了突破这个限制，大的字段值通常被压缩或切片成多个物理行存到另一张系统表中（TOAST表）。
+
+6.4.3 临时表
+	回话级临时表	CREATE temporary table
+	只在同一个回话中可以访问
+	
+	事务级临时表 CREATE temporary table (....) on commit delete rows;
+	on commit preserve rows：若不带on commit 子名，默认情况下，数据会一直存在于整个回话周期中
+	on commit delete rows：数据值存在事务周期中，事务一提交，数据就消失了
+	on commit drop：数据值存在于事务周期中，事务一提交，临时表就消失了。
+
+6.4.4 默认值
+
+6.4.5 约束
+
+
+
