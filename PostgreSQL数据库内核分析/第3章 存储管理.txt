@@ -90,6 +90,60 @@
 	同时有多个扫描扫描同一个表，但是这些扫描进度不同，此时会是进度慢的扫描与进度快的扫描同步，然后进度慢的扫描会回去重现扫描未扫描的部分。
 
 3.4.2 元组操作
+
+	1 插入操作
+	首先要调用heap_form_tuple初始化HeapTuple结构，然后调用heap_insert接口函数插入元组
+	1）首先调用newoid为要插入的元组分配OID
+	2）初始化tup
+	3）找到属于该表且空闲空间，将其载入缓冲区来插入tup
+	4）调用RelationPutHeapTuple函数将新元组插入选中的缓冲区
+	5）向事务日志中写入一条XLog
+	6）解锁并释放缓冲区，返回OID
+
+	2 删除元组
+	标记删除
+
+	3 更新元组
+	实际是删除和插入操作的结合
+
+3.5 VACUUM机制
+
+3.4.1 VACUUM操作
+	VACUUM有Lazy VACUUM和Full VACUUM，两者皆会用到的重要函数。
+	第一个函数是PageRepairFragmentation，当将一个文件块内无效元组标记为可用之后，该函数将把块内所有的空闲碎片移动到块的空闲区域，从而实现块内碎片的整理。
+	第二个函数是heap_page_prune，该函数用于清理单个文件快的HOT链，并进行块内碎片的清理。
+	VACUUM操作主要由函数vacuum实现
+
+3.5.3 Lazy VACUUM
+	主要由lazy_scan_heap实现，其调用的几个重要函数：
+	1）lazy_vacuum_heap:该函数将对无效元组链上的元组按文件块为单位进行逐块清理，清理函数为lazy_vacuum_page，并调用RecordPageWithFreeSpace对文件块的空闲空间值进行更新；
+	2）lazy_vacuum_page：
+	3）heap_page_prune函数：
+
+3.5.4 Full VACUUM
+	除了对文件块进行整理外，还实现了跨块移动元组的操作，其接口函数为full_vacuum_rel。
+	fraged_pages链表用于记录具有空闲空间的文件块，用作元组跨块移动的目标块；vacuum_pages链表，用于记录所有需要清理的文件块。
+	repair_flag是碎片整理函数
+	1）从vacuum_pages上最后一个非空文件块开始向前扫描
+	a、如果存在无效数据，需调用vacuum_page函数对文件块进行清理和块内碎片整理
+	b、逐个扫描块内元组，并将其向frag_pages链表上的文件块中移动元组，目标块总是在当前块前面。
+	c、没有可作为移动的目标文件块时，跳出循环。
+	2）调用vacuum_page函数处理vacuum_pages链表上剩余的文件块
+	3）对文件进行截断，除去文件尾的空块。
+
+3.6 ResourceOwnew资源跟踪
+	记录了大多数事务过程中用到的资源。
+	ResourceOwner对象相互之间会构成一个树结构，为了便于管理ResourceOwner树，在内存中保存了三个全局的ResourceOwner结构变量
+	CurrentResourceOwner：记录当前使用的ResourceOwner
+	CurTransactionResourceOwner：记录当前事务ResourceOwner
+	TopTransactionResourceOwner：记录顶层事务的ResourceOwner。
+	对每一种资源，都为其定义了三种操作：
+	1）在ResourceOwner中分配内存，函数ResourceOwnerEnlargeBuffer
+	2）增加资源跟踪，函数ResourceOwnerRememberBuffer
+	3）从ResourceOwner中移出资源跟踪，函数ResourceOwnerForgetBuffer
+	
+	
+
 	
 	
 	

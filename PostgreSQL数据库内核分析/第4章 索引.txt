@@ -1,0 +1,24 @@
+第4章 索引
+
+4.1 概述
+
+4.1.1 索引的方式
+	唯一索引、主键索引、多属性索引、部分索引
+
+4.1.2 索引类型
+	1）B-Tree：涉及比较操作符<、>、=
+	2）Hash：对索引关键字进行散列，涉及=操作
+	3）GiST：GiST（Generalized Search Tree）通用索引树，是一种架构或者索引模板，在这种架构（模板）上实现不同的索引策略。
+	4）GIN：GIN（Generalized Inverted Index）倒排索引，可以处理包含多个键的值。
+
+4.1.3 索引相关的系统表
+	
+	每种索引类型都在系统表pg_am（access method）里面用一个元组来记录。目前该表中只有4个元组。
+	对于每一个创建的索引都会在系统表pg_class系统表中添加一个元组，同时还会在系统表pg_index中添加一个元组。pg_index用于记录与索引有关的信息。
+	每一种索引并不直接设定该类型的索引所要操作的数据类型，而是由操作符类型系统表pg_opclass进行管理。
+	在pg_opclass中，每一个操作符类都引用了系统表pg_opfamily中的一个元组，表名该操作符类的操作集合。
+	pg_opclass和pg_opfamily系统表都没有指定索引方法对各种数据类型的具体操作函数，这些信息保存在相关的系统表pg_amop和pg_amproc中。pg_amop存储每个索引操作符集合（pg_opfamily）与具体操作符（pg_operator）的关联信息.
+
+4.1.4 索引的操作函数
+	不同索引的操作函数并不相同，最多可以有13个操作函数。
+	每一种索引类型可以实现ambuild、aminsert、ambulkdelete、amvacuumcleanup、amcostestimate、amoptions、ambeginscan、amgettuple、amgetbitmap、amrescan、amendscan、ammarkpos、amrestrpos共13个函数，会有相应的13个函数来实现这些接口。
