@@ -1,3 +1,4 @@
+
 第4章 索引
 
 4.1 概述
@@ -163,32 +164,62 @@
 	4）consistent方法
 	5）comparePartial方法
 	
+4.5.2 GIN索引的组织结构
+	GIN索引包含以下四个部分：
+	Entry：是GIN索引中的一个元素，也可以理解为GIN索引中的一个键值。
+	Entry Tree：在一些Entry上构建的BTree
+	Posting Tree：在一个Entry出现的物理位置上构建的BTree
+	Posting List：一个Entry出现的物理位置列表
+
+4.5.3 GIN索引操作
 	
+	GIN索引的创建过程就是从基表中依次取出基表元组，然后从基表元组构建出若干个Entry及其“Posting List”，然后将这些Entry插入到GIN索引结构中。在实现中，GIN索引创建函数并不是构建出一个Entry就立即将其插入到GIN索引中，而是建立一个“积蓄池”，构建出的Entry都将先放入到积蓄池，当积蓄池填充到一定程度后才会将其中缓存的Entry依次插入到GIN索引中去。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	1、GIN索引的创建
+	GIN索引的创建函数使用了一个GINBuildState类型的变量来对整个创建过程的状态加以控制。
+	积蓄池的数据类型为BuildAccumulator。
+	EntryAccumulator用来保存Entry。
+	对于同一个Entry，即使在多个元组的同一个属性中出现，也都是保存在同一个EntryAccumulator中，其出现的不同位置保存在list结构中。但是同一个Entry如果出现在不同的属性中，则要用不同的EntryAccumulator来表示。
+	ginInsertRecordBA函数用于将来自于同一个元组的同一属性的多个Entry插入到积蓄池。其插入策略是：
+	1）将Entry数组进行排序
+	2）首先将Entry数组中间元素插入到排序二叉树中，然后采用相同的策略递归的处理Entry数组的左半部分和右半部分
+	这种策略的好处是能够尽量保证插入记录后的二叉树趋于平衡，不会是得其高度太大，影响查找效率。
+	创建GIN索引的函数是ginbuild函数。
+	将Entry及其位置信息插入到GIN索引结构中，是通过ginEntryInsert函数来完成的。
+	在ginEntryInsert中，待插入的Entry用一个数据结构GinBtreeData来管理。该结构在GIN索引进行查询、插入时都会用到。
+	对于GIN索引的插入，若一次插入了很多元组，则会调用ginHeapTupleFastInsert函数进行插入，该函数的执行流程与索引创建流程类似。
+	在大多数情况下，若更新的数据量很大，GIN索引的Posting List结构可能较长，向GIN索引插入的速度较慢。因此，对于向表中大量插入的操作，建议先删除GIN索引，在完成插入后重新创建它。
 	
+	2、GIN索引查询
 
+
+4.6 TSearch2全文搜索
+	TSearch2实现了对文档创建GIN或者GiST索引的支持。
+	
+	全文搜索一般由三个步骤：
+	1）对文档进行预处理，得到处理后的结果，创建索引
+	2）解析查询条件，使用索引进行查询
+	3）得到查询结果，对结果进行处理后返回。
+	PostgreSQL提供了一个数据类型tsvector用于存储预处理后的文档，还提供了一个数据类型tsquery用于查询（还为这两种类型提供了匹配操作符@@）以及查询结果的处理。
+
+4.6.1 全文索引的创建
+	预处理包括文本解析、语义分析和词位存储。解析后的词语信息存放在TSVector结构。文本解析到词位存储这一过程是由函数to_tsvector_byid完成的，该函数首先调用parsetext函数对文本进行解析和语义分析，然后在调用make_tsvector将词位信息构建成TSVector。
+	1、文本解析
+	通过解析器将文档解析成一个个记号。
+	2、语义分析
+	对解析器处理过的token文本序列通过参照词典的审核规范成标准的词（lexeme）信息。
+	完成语义分析后得到一个全部处理后得到的单词信息，这些单词信息保存在ParsedText结构中。
+	3、词位存储
+	归总语义分析后的单词在文档中的位置，并将其出现的次数及每个位置存储下来。
+
+
+4.6.2 全文索引的查询
+	
+	全文索引查询前需要对检索的语句进行处理，处理过程跟全文索引的创建过程类似，要对查询语句进行文本解析和语义分析，将分析后的结果封装成tsquery格式，然后通过就可以通过对创建在tsvector上的索引进行匹配查询。不同之处在于：查询处理时，各个处理后的单词使用布尔操作符进行连接。
+	to_tsquery和plainto_tsquery两个函数用于把查询转换成tsquery数据类型。to_tsquery对参数要求严格，必须使用布尔操作符分隔各个单词；plainto_tsquery对格式要求没有那么严格。
+	这两个函数都是通过parse_tsquery函数来实现的。
+
+4.6.3 查询结果处理
+	（1）设置文档权重：tsvector_setweight
+	（2）对查询结果排序：ts_rank和ts_rank_cd
+	（3）高亮显示：ts_headline
