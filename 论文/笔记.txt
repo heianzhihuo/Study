@@ -1,0 +1,113 @@
+大数据
+位图索引压缩算法
+
+
+
+A、在该领域内有哪些算法？
+BBC,WAH, PLWAH, EWAH, PWAH, CONCISE, COMPAX, VLC, DF-WAH, VAL-WAH
+SECOMPAX, ICX, MASC, PLWAH+
+
+
+B、这些算法可以如何分类，分为哪些派别？
+
+根据segmention（分割）、chunking（分块）、Merge Compress（合并压缩）、Near Identical（NI）
+
+
+
+C、这些算法主要特色（优点和缺点）是什么？
+
+BBC(Byte-aligned Bitmap Compression，字节位图压缩)
+	提出的目的是支持压缩位图格式数据的快速的集合操作，支持压缩率，存取、并交反转，位逻辑操作
+	按字节压缩位图数据，位图字节分成gaps和maps
+	在很多情况下，位逻辑操作在数量级上仍然比未压缩的位图数据慢
+	对于只读数据或只追加的数据效率高
+
+
+WAH(Word-Aligned Hybrid,字之间的对齐混合)
+	位序列32位一组，分成两种类型的组：literal和fill，用首位标识两种组，第2位标识0-fill和1-fill
+	CPU-friendly，
+	位逻辑操作运算速度是BBC的12倍，增加了60%的存储空间
+	在大多数情况下，WAH更快使用更少空间
+	减小了索引空间，提高了理论查询速率，支持高维数据查询
+	多维查询比B树索引的效率高
+	适用于大量的高维数据集的分析
+	
+
+
+PLWAH(Position List Word-Aligned Hybrid)
+	在WAH基础上扩展，fill类型的组低25位为计数器，通过引入“几乎相同”和“位置列表”提高压缩效率
+	提高了空间利用率，通常只用了WAH的一半空间，同时有更高的CPU效率
+	在均匀分布的位图数据中，PLWAH只用了WAH的一半空间
+	在聚集的位图数据中，PLWAH也比WAH用更少的空间
+
+
+EWAH（Enhanced Word-Aligned Hybrid）
+	加强版的WAH，将连续的0或1定义为clean segment，混合的定义为dirty segment。verbtim word和marker word（标记字节），标记字节的首位标识哪种字节，后16位为clean word的数目，剩余15位用来保存在clean word后的脏字节数目。
+	当很多连续的clean word时，EWAH效率可能比WAH效率低。当脏字节少时，适合用WAH
+	RLE、WAH、BBC对行敏感，简单的字典序排序可以使得索引减小到原来的9分之一，同时提高效率，其效率依赖于行的顺序
+	计算最好的序列是NP-hard问题，
+	通过对行和列的重新排列，提高了效率
+
+
+CONCISE(COmpressed N Composable Integer SEt)
+	基于WAH,5位用来标识翻转位的位置
+	比WAH效率高
+	对比WAH减少了50%的大小，不影响位逻辑运算，在某些情况下甚至速度更快
+
+
+PWAH（Partitioned Word-Aligned Hybrid）
+	字长扩展到64位，把一个字分成P片，P位的header，标识fill和literal。literal的长度可以改变。PWAH-2，PWAH-4，PWAH-8
+	在WAH的基础上修改
+	在内存使用上优于WAH
+	用于对位向量的压缩
+
+
+UCB（Update Conscious Bitmap Indices）
+	传统的位图索引压缩算法都是在只读数据上的算法，无法对数据进行追加、更改和删除，修改的拌饭是删除原索引，修改数据后重新建立索引
+	UCB算法，可以对数据进行改动，增删改等操作
+
+
+VLC(Variable Length Compression)
+	VLC最好的情况压缩比BBC好30%，比WAH好70%，查询速度是BBC的1.6倍，是WAH的1.25倍
+	可以用变长的编码方式压缩数据
+
+
+VAL-WAH（Variable Aligned Length WAH）
+	变长的WAH算法
+	VAL-WAH是WAH的1.8x小，查询速度30%
+	
+
+PLWAH+
+	提出了LF字节，可以容纳更多的NI字节，可以减少20%的Literal words，节省3%的存储空间。更适合于流媒体网络流量。
+	在PLWAH的基础上扩展，可变长的计数器，连续的0或1的数目超出计数器上限，用两个连续的fill word来保存
+	适用于大量数据，高速的网络流量，更适合现代的CPU架构
+
+
+COMPAX(COMPressed Adaptive indeX)
+	31位一块，同样分成Fill和Literal，很多块可以分成四种不同的类型：(1) Literal-Fill-Literal (LFL);(2) Fill-Literal-Fill (FLF); (3) Fill (F); and (4) Literal(L)
+	优于WAH
+
+
+
+SECOMPAX（Scope Extended COMPAX）
+	基于COMPAX2，脏字节包含0-NI-L和1-NI-L，与0-Fill和1-Fill相同的字节
+	
+
+ICX(Improved COMPAX)
+	ICX考虑了一个或两个脏字节的情况
+
+
+MASC（MAximized Stride with Carrier）
+	PLWAH的扩展版本，比PLWAH性能好
+	
+	
+
+
+D、这个领域内大家认为重要的关键问题有哪些？有哪些特性是大家重视的优点？有哪些特性是大家在意的缺点？这些优点与缺点通常在哪些应用场合时会比较被重视？在哪些应用场合时比较不会被重视？
+
+关键问题：压缩率、查询速度、是否能进行增删改查以及相应的速度
+增删操作压缩速度，在网络流比较重要，在数数据流速度快
+
+
+
+
