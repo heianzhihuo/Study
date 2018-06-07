@@ -1,0 +1,198 @@
+/*-------------------------------------------------------------------------
+ *
+ * elog.c--
+ *    error logger
+ *
+ * Copyright (c) 1994, Regents of the University of California
+ *
+ *
+ * IDENTIFICATION
+ *    $Header: /usr/local/cvsroot/postgres95/src/backend/utils/error/elog.c,v 1.11 1996/11/14 10:24:22 bryanh Exp $
+ *
+ *-------------------------------------------------------------------------
+ */
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <time.h>
+#include <fcntl.h>
+#ifndef O_RDONLY
+#include <sys/file.h>
+#endif /* O_RDONLY */
+#include <sys/types.h>
+#include <stdarg.h>
+
+#include <unistd.h>
+#include <signal.h>
+
+#include "postgres.h"
+#include "miscadmin.h"
+#include "libpq/libpq.h"
+#include "storage/proc.h"
+#include "utils/elog.h"
+
+static int	Debugfile = -1;
+static int	Err_file = -1;
+static int	ElogDebugIndentLevel = 0;
+
+
+/*
+ * elog --
+ *	Old error logging function.
+ */
+void
+elog(int lev, const char *fmt, ... )
+{
+    va_list ap;
+    char		buf[ELOG_MAXLEN], line[ELOG_MAXLEN];
+    register char	*bp;
+    register const char *cp;
+
+    time_t	time();
+#ifdef ELOG_TIMESTAMPS
+    time_t	tim;
+#endif
+    int		len;
+    int		i = 0;
+    
+	printf("Error\n");
+    switch (lev) {
+    case NOIND:
+	i = ElogDebugIndentLevel-1;
+	if (i < 0) i = 0;
+	if (i > 30) i = i%30;
+	cp = "DEBUG:";
+	break;
+    case DEBUG:
+	i = ElogDebugIndentLevel;
+	if (i < 0) i = 0;
+	if (i > 30) i = i%30;
+	cp = "DEBUG:";
+	break;
+    case NOTICE:
+	cp = "NOTICE:";
+	break;
+    case WARN:
+	cp = "WARN:";
+	break;
+    default:
+	sprintf(line, "FATAL %d:", lev);
+	cp = line;
+    }
+#ifdef ELOG_TIMESTAMPS
+    time(&tim);
+    strcat(strcpy(buf, cp), ctime(&tim)+4);
+    bp = buf+strlen(buf)-6;
+    *bp++ = ':';
+#else
+    strcpy(buf,cp);
+    bp = buf+strlen(buf);
+#endif
+    while (i-- >0) *bp++ = ' ';
+    for (cp = fmt; *cp; cp++)
+	if (*cp == '%' && *(cp+1) == 'm') {
+	    if ( errno >= 0)
+		strcpy(bp, strerror(errno));
+	    else
+		sprintf(bp, "error %d", errno);
+	    bp += strlen(bp);
+	    cp++;
+	} else
+	    *bp++ = *cp;
+    *bp = '\0';
+    vsprintf(line, buf, ap);
+    va_end(ap);
+    len = strlen(strcat(line, "\n"));
+    if (Debugfile > -1)
+	write(Debugfile, line, len);
+    if (lev == DEBUG || lev == NOIND)
+	return;
+    
+    printf("%s\n",line);
+    
+    /*  If there's an error log file other than our channel to the
+     *  front-end program, write to it first.  This is important
+     *  because there's a bug in the socket code on ultrix.  If the
+     *  front end has gone away (so the channel to it has been closed
+     *  at the other end), then writing here can cause this backend
+     *  to exit without warning -- that is, write() does an exit().
+     *  In this case, our only hope of finding out what's going on
+     *  is if Err_file was set to some disk log.  This is a major pain.
+     */
+    
+    if (Err_file > -1 && Debugfile != Err_file) {
+	if (write(Err_file, line, len) < 0) {
+	    
+	    exitpg(lev);
+	}
+	fsync(Err_file);
+    }
+    
+
+    
+    
+    if (lev == FATAL) {
+	/*
+	 * Assume that if we have detected the failure we can
+	 * exit with a normal exit status.  This will prevent
+	 * the postmaster from cleaning up when it's not needed.
+	 */
+	exitpg(0);
+    }
+    
+    if (lev > FATAL) {
+	exitpg(lev);
+    }
+}
+
+#ifndef PG_STANDALONE
+int
+DebugFileOpen(void)
+{
+//     int fd, istty;
+    
+//     Err_file = Debugfile = -1;
+//     ElogDebugIndentLevel = 0;
+    
+//     if (OutputFileName[0]) {
+// 	OutputFileName[MAXPGPATH-1] = '\0';
+// 	if ((fd = open(OutputFileName, O_CREAT|O_APPEND|O_WRONLY,
+// 		       0666)) < 0)
+// 	    elog(FATAL, "DebugFileOpen: open of %s: %m",
+// 		 OutputFileName);
+// 	istty = isatty(fd);
+// 	(void) close(fd);
+// 	/* If the file is a tty and we're running under the
+// 	 * postmaster, try to send stdout there as well (if it
+// 	 * isn't a tty then stderr will block out stdout, so we
+// 	 * may as well let stdout go wherever it was going before).
+// 	 */
+// 	if (istty &&
+// 	    IsUnderPostmaster &&
+// 	    !freopen(OutputFileName, "a", stdout))
+// 	    elog(FATAL, "DebugFileOpen: %s reopen as stdout: %m",
+// 		 OutputFileName);
+// 	if (!freopen(OutputFileName, "a", stderr))
+// 	    elog(FATAL, "DebugFileOpen: %s reopen as stderr: %m",
+// 		 OutputFileName);
+// 	Err_file = Debugfile = fileno(stderr);
+// 	return(Debugfile);
+//     }
+// #ifndef WIN32    
+//     /* If no filename was specified, send debugging output to stderr.
+//      * If stderr has been hosed, try to open a file.
+//      */
+//     fd = fileno(stderr);
+//     if (fcntl(fd, F_GETFD, 0) < 0) {
+// 	sprintf(OutputFileName, "%s/pg.errors.%d",
+//                 DataDir, (int)getpid());
+// 	fd = open(OutputFileName, O_CREAT|O_APPEND|O_WRONLY, 0666);
+//     }
+// #endif /* WIN32 */    
+//     if (fd < 0)
+// 	elog(FATAL, "DebugFileOpen: could not open debugging file");
+    
+//     Err_file = Debugfile = fd;
+//     return(Debugfile);
+}
+#endif
